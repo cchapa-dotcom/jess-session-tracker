@@ -50,7 +50,7 @@ tfoot td{font-weight:500;border-top:2px solid #ccc;background:#fafaf8}
   <h2 class="section-title">Yearly summary</h2>
   <div class="card">
     <table>
-      <thead><tr><th>Year</th><th class="right">Sessions</th><th class="right">Hours</th><th class="right">Revenue</th><th class="right">Avg sessions/mo</th><th class="right">Avg hrs/mo</th></tr></thead>
+      <thead><tr><th>Year</th><th class="right">Sessions</th><th class="right">Hours</th><th class="right">Revenue</th><th class="right">Avg sessions/mo</th><th class="right">Avg hrs/mo</th><th class="right">Avg hrs/wk</th></tr></thead>
       <tbody id="yearBody"></tbody>
     </table>
   </div>
@@ -88,12 +88,14 @@ document.getElementById('metrics').innerHTML=`
   <div class="metric"><div class="label">Net revenue</div><div class="value">${fmt(totalR)}</div><div class="sub">Package rates applied</div></div>
   <div class="metric"><div class="label">Last 6mo sessions</div><div class="value">${r6S.toLocaleString()}</div><div class="sub">${Math.round(r6S/6)}/mo avg</div></div>
   <div class="metric"><div class="label">Last 6mo revenue</div><div class="value">${fmt(r6R)}</div><div class="sub">${fmt(Math.round(r6R/6))}/mo avg</div></div>
+  <div class="metric"><div class="label">Avg hours/week</div><div class="value">${Math.round(totalMin/60/activeMo/4.33*10)/10}</div><div class="sub">${Math.round(totalMin/60/activeMo)} hrs/mo</div></div>
 `;
 let yearHtml='';
 for(const[y,d]of Object.entries(YEARS).sort()){
   if(d.s===0&&d.r===0)continue;
   const mo=d.months||1;
-  yearHtml+=`<tr class="year-row"><td>${y}</td><td class="right">${d.s.toLocaleString()}</td><td class="right">${Math.round(d.min/60).toLocaleString()}</td><td class="right">${fmt(d.r)}</td><td class="right">${d.s>0?Math.round(d.s/mo):'—'}</td><td class="right">${d.min>0?Math.round(d.min/60/mo):'—'}</td></tr>`;
+  const hrsWk=d.min>0?Math.round(d.min/60/mo/4.33*10)/10:'—';
+  yearHtml+=`<tr class="year-row"><td>${y}</td><td class="right">${d.s.toLocaleString()}</td><td class="right">${Math.round(d.min/60).toLocaleString()}</td><td class="right">${fmt(d.r)}</td><td class="right">${d.s>0?Math.round(d.s/mo):'—'}</td><td class="right">${d.min>0?Math.round(d.min/60/mo):'—'}</td><td class="right">${hrsWk}</td></tr>`;
 }
 document.getElementById('yearBody').innerHTML=yearHtml;
 const labels=f24.map(d=>{const[y,mo]=d.m.split('-');return new Date(y,mo-1).toLocaleDateString('en-US',{month:'short',year:'2-digit'})});
